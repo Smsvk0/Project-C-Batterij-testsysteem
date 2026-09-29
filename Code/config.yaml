@@ -1,0 +1,9 @@
+chemistries:
+  li-ion:
+    cutoff_v: 4.2      # stop charging at/above this
+    resume_v: 4.0      # restart only below this (your 0.2 V hysteresis)
+    voltage_min_v: 2.85
+    implausible_v: [0.0, 6.0]
+
+hardware:
+  relay_pin:

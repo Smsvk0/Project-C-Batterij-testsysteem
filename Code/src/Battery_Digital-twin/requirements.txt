@@ -1,0 +1,17 @@
+#Math, data en interpolation
+numpy>=1.24.0
+scipy>=1.10.0
+pandas>=2.0.0
+
+#Reinforcement Learning
+gymnasium>=0.29.0
+
+#Unit testing
+pytest>=7.0.0
+
+#Optional: to plot graphs for the battery simulation
+matplotlib>=3.7.0
+
+#Database
+influxdb-client>=1.36.0
+psycopg2-binary>=2.9.0

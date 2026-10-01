@@ -95,4 +95,24 @@ def update_rc_voltage(
 
     return float(v_rc1_next), float(v_rc2_next)
     
-    
+def calculate_terminal_voltage(
+    ocv: float,
+    current: float,
+    r0: float,
+    v_rc1: float,
+    v_rc2: float,
+) -> float:
+    """
+    Calculate the battery terminal voltage under load.
+
+    Parameters:
+        ocv (float): Open Circuit Voltage (V).
+        current (float): Load current in Amperes (positive = discharge, negative = charge).
+        r0 (float): Ohmic internal resistance (Ohm).
+        v_rc1 (float): Voltage drop across RC1 element (V).
+        v_rc2 (float): Voltage drop across RC2 element (V).
+
+    Returns:
+        float: Terminal voltage V_terminal (V).
+    """
+    return ocv - (current * r0) - v_rc1 - v_rc2

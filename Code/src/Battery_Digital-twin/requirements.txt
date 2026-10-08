@@ -1,3 +1,6 @@
+# If you're running this code for the first time use: "pip install -r requirements.txt" to install all the needed packages/libraries
+# Make sure you are in the right directory before you run the command
+
 #Math, data en interpolation
 numpy>=1.24.0
 scipy>=1.10.0

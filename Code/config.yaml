@@ -5,5 +5,18 @@ chemistries:
     voltage_min_v: 2.85
     implausible_v: [0.0, 6.0]
 
+  redox-flow:
+    cutoff_v:
+    resume_v:
+    voltage_min_v:
+    implausible_v:
+    pomp_min_v:
+    pomp_max_v:
+  
+
 hardware:
   relay_pin:
+
+runtime:
+  api_core: 0    # kern waarop de FastAPI (main loop) draait
+  model_core: 1  # kern waarop het model (safety-loop) draait

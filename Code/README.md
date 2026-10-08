@@ -40,17 +40,17 @@ Tests run on a **digital twin first**, then deploy to the real system.
 
 ## Build plan (each step has a "done when")
 
-| # | Step | Done when |
-|---|------|-----------|
-| 1 | Config + `apply_limits` + tests | limit, just below, and NaN cases behave correctly |
-| 2 | InfluxDB loader → resampled DataFrame (1 min) | a full day of solar/weather data plots |
-| 3 | Li-ion twin: coulomb counting + equivalent circuit (R0/R1/C1, OCV curve fitted from logs) | predicted voltage matches held-out data |
-| 4 | Gymnasium env wrapping the twin, replays logged solar/weather, all actions through `apply_limits`, twin params randomized | agent can train on the twin |
-| 5 | Baseline controller (e.g. charge when solar high and SoC below threshold) | its score is recorded |
-| 6 | Online solar forecast with River, prequential evaluation | beats "same as 15 min ago" |
-| 7 | RL agent trained in the twin | beats the baseline across randomized twin parameters |
-| 8 | Runtime loop on the Pi: read → sanity check → model → `apply_limits` → apply → log | runs in shadow mode |
-| 9 | Flow battery: new twin + config, same interface, retrained | steps 3–8 repeated for the flow battery |
+| # | Step                                                                                                                       | Done when                                            |
+| - | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| 1 | Config +`apply_limits` + tests                                                                                           | limit, just below, and NaN cases behave correctly    |
+| 2 | InfluxDB loader → resampled DataFrame (1 min)                                                                             | a full day of solar/weather data plots               |
+| 3 | Li-ion twin: coulomb counting + equivalent circuit (R0/R1/C1, OCV curve fitted from logs)                                  | predicted voltage matches held-out data              |
+| 4 | Gymnasium env wrapping the twin, replays logged solar/weather, all actions through`apply_limits`, twin params randomized | agent can train on the twin                          |
+| 5 | Baseline controller (e.g. charge when solar high and SoC below threshold)                                                  | its score is recorded                                |
+| 6 | Online solar forecast with River, prequential evaluation                                                                   | beats "same as 15 min ago"                           |
+| 7 | RL agent trained in the twin                                                                                               | beats the baseline across randomized twin parameters |
+| 8 | Runtime loop on the Pi: read → sanity check → model →`apply_limits` → apply → log                                   | runs in shadow mode                                  |
+| 9 | Flow battery: new twin + config, same interface, retrained                                                                 | steps 3–8 repeated for the flow battery             |
 
 ## Tech stack
 
@@ -60,3 +60,10 @@ Python · FastAPI · InfluxDB OSS (MIT) · PyYAML · NumPy/SciPy/pandas (BSD) ·
 
 - What exactly should the system optimize? Solar self-consumption, battery lifetime, keeping a reserve for a load — or a combination?
 - Exact capacity of the current test battery.
+
+## TODO / later terugkomen
+
+- **NaN / implausible voltage:** `applyLimits()` crasht met `ValueError` als de sensor NaN of een andere ongeldige waarde stuurt (elke vergelijking is dan `False`, dus geen enkele `if` treedt af). De relay gaat wel veilig uit, maar de hoofdloop stopt dan volledig. Beslissen later: crashbestendig maken door de exception weg te laten en in plaats daarvan de volgende geldige meetwaarde afwachten.
+- **Redox flow:** config en twin komen pas later wanneer we de specs hebben (zie `config.yaml`, velden leeg).
+- **Hardware:** `relay_pin` in `config.yaml` nog leeg — invullen zodra de pin uit de schakeling bekend is.
+- **API:** Put the reciever.py on a seperate tread in the main loop.

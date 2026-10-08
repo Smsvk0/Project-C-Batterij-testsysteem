@@ -20,9 +20,9 @@ def applyLimits(voltage, wasCharging, batteryType):
     if (voltage < resume_v):
         turnOn()
         return True
-    if (voltage > resume_v) and (voltage < cutoff_v) and (wasCharging == True):
+    if (voltage >= resume_v) and (voltage < cutoff_v) and (wasCharging == True):
         return True
-    if (voltage > resume_v) and (voltage < cutoff_v) and (wasCharging == False):
+    if (voltage >= resume_v) and (voltage < cutoff_v) and (wasCharging == False):
         return False
 
     # If it goes past all if statements it raises an error

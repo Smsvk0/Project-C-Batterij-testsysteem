@@ -14,7 +14,7 @@ The Digital Twin models non-linear battery dynamics across varying operating con
 6. **RL Execution** (train.py / deploy_twin.py): Handles model optimization using Stable-Baselines3 DQN during training, and executes real-time inference on the active Digital Twin setup during deployment.
 
 
-**Digital Twin Structure:** 
+## Digital Twin Structure:
 ```text
 Battery_Digital_Twin/
 ├── Digital_twin/               # Core physical simulation models
@@ -35,3 +35,51 @@ Battery_Digital_Twin/
 ├── main.py                     # Entry point for execution/testing
 ├── README.md                   # Module documentation
 └── requirements.txt            # Python dependencies
+```
+## The Architecture
+```
+
++-----------------------------------------------------------+
+|                     Database / DB                         |
++-----------------------------------------------------------+
+                              |
+                              | (On init: loads tables)
+                              v
++-----------------------------------------------------------+
+|                      data_loader.py                       |
++-----------------------------------------------------------+
+                              |
+                              | (provides parameters)
+                              v
++-----------------------------------------------------------+
+|                         twin.py                           |
+|      (combines capacity_model.py & voltage_model.py)      |
++-----------------------------------------------------------+
+                              |
+                              | (calculates SOC, Volt, Temp)
+                              v
++-----------------------------------------------------------+
+|                      battery_env.py                       |
+|  (Gymnasium wrapper: maps actions & calculates rewards)   |
++-----------------------------------------------------------+
+                              |
+               +--------------+--------------+
+               |                             |
+               v                             v
++-----------------------------+-------+---------------------+
+|          train.py           |       |     evaluate.py     |
+|        (trains DQN)         |       |    (tests agent)    |
++--------------+--------------+-------+----------+----------+
+               |                                 |
+               | (saves model)                   | (loads model)
+               v                                 |
++-------------------------------------+          |
+|        dqn_battery_model.zip        |<---------+
++----------------------+--------------+
+                       |
+                       | (loads model)
+                       v
++-----------------------------------------------------------+
+|                      deploy_twin.py                       |
+|              (Live control & Digital Twin)                |
++-----------------------------------------------------------+

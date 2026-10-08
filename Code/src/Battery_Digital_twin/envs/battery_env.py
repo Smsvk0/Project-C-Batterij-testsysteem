@@ -9,14 +9,10 @@ class battery_env(gym.Env):
 
     def __init__(self, render_mode=None):
         super().__init__()
-        self.render_mode = render_mode
 
-        self.action_space = spaces.Box(
-            low=-1.0,
-            high=1.0,
-            shape=(1,),
-            dtype=np.float32
-        )
+        self.render_mode = render_mode
+        self.action_space = spaces.Discrete(3)
+        self.action_map = {0: -50.0, 1: 0.0, 2: 50.0}
 
         low_obs = np.array([0.0, 2.5, -20.0], dtype=np.float32)
         high_obs = np.array([1.0, 4.5, 80.0], dtype=np.float32)
@@ -41,8 +37,9 @@ class battery_env(gym.Env):
 
         return obs, info
 
-    def step(self, action: np.ndarray):
-        current_amps = float(action[0]) * 50.0
+    def step(self, action: int):
+        action_idx = int(action) if np.isscalar(action) else int(action[0])
+        current_amps = self.action_map.get(action_idx, 0.0)
         dt = 1.0
 
         state = self.twin.step(current_amps=current_amps, dt=dt)
@@ -64,22 +61,22 @@ class battery_env(gym.Env):
         info = {
             "v_terminal": state["v_terminal"],
             "soc": state["soc"],
-            "temp": state["temp"]
+            "temp": state["temp"],
+            "current_amps": current_amps
         }
 
         return obs, reward, terminated, truncated, info
 
     def _get_obs(self) -> np.ndarray:
         return np.array([
-            self.twin.soc, 
-            self.twin.v_terminal if hasattr(self.twin, 'v_terminal') else 4.2,
-            self.twin.temp
+            float(self.twin.soc), 
+            float(self.twin.v_terminal),
+            float(self.twin.temp)
         ], dtype=np.float32)
 
-    def _calculate_reward(self, state:dict, current: float, terminated: bool) -> float:
+    def _calculate_reward(self, state: dict, current: float, terminated: bool) -> float:
         if terminated:
             return -100.0
 
         reward = 1.0 - (abs(current) * 0.01)
         return float(reward)
-

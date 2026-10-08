@@ -12,8 +12,8 @@ class battery_env(gym.Env):
         self.render_mode = render_mode
 
         self.action_space = spaces.Box(
-            low=-50.0,
-            high=50.0,
+            low=-1.0,
+            high=1.0,
             shape=(1,),
             dtype=np.float32
         )
@@ -30,22 +30,24 @@ class battery_env(gym.Env):
         self.v_max = 4.2
         self.temp_max = 60.0
 
+        self.twin = DigitalTwin(capacity_ah=100.0, initial_soc=1.0, initial_temp=25.0)
+
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
 
-        self.twin = DigitalTwin(cpacity_ah=100.0, initial_soc=1.0, initial_temp=25.0)
+        self.twin = DigitalTwin(capacity_ah=100.0, initial_soc=1.0, initial_temp=25.0)
         obs = self._get_obs()
         info = {}
 
         return obs, info
 
     def step(self, action: np.ndarray):
-        current_amps = float(action[0])
+        current_amps = float(action[0]) * 50.0
         dt = 1.0
 
         state = self.twin.step(current_amps=current_amps, dt=dt)
 
-        obs = self._get_bos()
+        obs = self._get_obs()
 
         terminated = False
         if state["v_terminal"] < self.v_min or state["v_terminal"] > self.v_max:
@@ -57,7 +59,7 @@ class battery_env(gym.Env):
 
         truncated = False
 
-        reward = self.calculate_reward(state, current_amps, terminated)
+        reward = self._calculate_reward(state, current_amps, terminated)
 
         info = {
             "v_terminal": state["v_terminal"],

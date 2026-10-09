@@ -1,4 +1,3 @@
-
 # Comprehensive Overview of Reinforcement Learning: Theory, Algorithms, and Neuroscientific Connections
 
 This detailed presentation explores reinforcement learning (RL) from foundational theory and mathematical models to practical examples, algorithmic advances, neuroscience correlations, and current challenges. It aims to make reinforcement learning accessible and relevant, demonstrating its potential impact on robotics and artificial intelligence in the coming decades.
@@ -147,8 +146,5 @@ These subfields are critical to advancing RL toward real-world usability, allowi
 ---
 
 This coverage equips a motivated learner with a solid understanding of reinforcement learning's foundations, its algorithms, the biological inspiration, and current research landscapes, preparing them for deeper exploration or application in AI and robotics.
-
-
-
 
 note: this information comes from a video from gonkee, this has been watched by us but ai did make the notes.
